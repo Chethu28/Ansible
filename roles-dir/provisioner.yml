@@ -1,0 +1,7 @@
+---
+
+- name: provising servers
+  hosts: all
+  become: yes
+  roles:
+    - post-install

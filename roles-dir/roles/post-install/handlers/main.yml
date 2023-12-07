@@ -1,0 +1,14 @@
+---
+# handlers file for post-install
+
+- name: restart NTP server in centos
+  service:
+    name: chronyd
+    state: restarted
+  when: ansible_distribution == "CentOS"
+
+- name: restart NTP server in ubuntu
+  service:
+    name: ntp
+    state: restarted
+  when: ansible_distribution == "Ubuntu"

@@ -1,0 +1,25 @@
+---
+
+- name: facts gathering 
+  hosts: all
+  become: yes
+    #gather_facts: False
+  tasks:
+    - name: os name 
+      debug:
+        var: ansible_distribution
+    - name: ansible_os_family
+      debug: 
+        var: ansible_os_family
+    - name: Print Memory details
+      debug:
+        var: ansible_memory_mb
+
+    - name: Print Real Memory details
+      debug:
+        var: ansible_memory_mb.real.free
+
+    - name: Print Processor name
+      debug:
+        var: ansible_processor[2]
+         

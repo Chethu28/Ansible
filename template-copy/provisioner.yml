@@ -1,0 +1,67 @@
+---
+
+- name: provising servers
+  hosts: all
+  become: yes
+  tasks: 
+    - name: install NTP server on centOS
+      yum:
+        name: chrony
+        state: present
+      when: ansible_distribution == "CentOS" 
+
+    - name: install NTP server on Ubuntu
+      apt:
+        name: ntp
+        state: present
+        update_cache: yes
+      when: ansible_distribution == "Ubuntu"
+
+    - name: Start NTP server in centos
+      service:
+        name: chronyd
+        state: started
+      when: ansible_distribution == "CentOS"
+
+    - name: Start NTP server in ubuntu
+      service:
+        name: ntp
+        state: started
+      when: ansible_distribution == "Ubuntu"
+
+    - name: adding banner to the servers
+      copy:
+        content: '# This server is managed by ansible, No manual changes'
+        dest: /etc/motd
+          
+    - name: Deploy the ntpconf files in centos
+      template:
+        src: templates/ntpconfig_centos
+        dest: /etc/chrony.conf
+        backup: yes
+      when: ansible_distribution == "CentOS"
+      notify:
+        - restart NTP server in centos
+
+
+    - name: Deploy the ntpconf files in ubuntu
+      template:
+        src: templates/ntpconfig_ubuntu
+        dest: /etc/ntp.conf
+        backup: yes
+      when: ansible_distribution == "Ubuntu"
+      notify:
+        - restart NTP server in ubuntu
+
+  handlers:
+    - name: restart NTP server in centos
+      service:
+        name: chronyd
+        state: restarted
+      when: ansible_distribution == "CentOS"
+
+    - name: restart NTP server in ubuntu
+      service:
+        name: ntp
+        state: restarted
+      when: ansible_distribution == "Ubuntu"

@@ -1,0 +1,30 @@
+---
+
+- name: provising servers
+  hosts: all
+  become: yes
+  tasks: 
+    - name: install NTP server on centOS
+      yum:
+        name: chrony
+        state: present
+      when: ansible_distribution == "CentOS" 
+    - name: install NTP server on Ubuntu
+      apt:
+        name: ntp
+        state: present
+        update_cache: yes
+      when: ansible_distribution == "Ubuntu"
+
+    - name: Start NTP server in centos
+      service:
+        name: chronyd
+        state: started
+      when: ansible_distribution == "CentOS"
+
+    - name: Start NTP server in ubuntu
+      service:
+        name: ntp
+        state: started
+      when: ansible_distribution == "Ubuntu"
+

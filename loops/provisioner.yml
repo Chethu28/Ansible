@@ -1,0 +1,42 @@
+---
+
+- name: installing  servers using loops
+  hosts: all
+  become: yes
+  tasks: 
+    - name: Installing below list of servers on centOS
+      yum:
+        name: "{{item}}"
+        state: present
+      when: ansible_distribution == "CentOS" 
+      loop:
+        - chrony
+        - git
+        - tree
+        - zip
+        - unzip
+
+    - name: install NTP server on Ubuntu
+      apt:
+        name: "{{item}}"
+        state: present
+        update_cache: yes
+      when: ansible_distribution == "Ubuntu"
+      loop:
+        - ntp
+        - git
+        - tree
+        - zip
+        - unzip
+    - name: Start NTP server in centos
+      service:
+        name: chronyd
+        state: started
+      when: ansible_distribution == "CentOS"
+
+    - name: Start NTP server in ubuntu
+      service:
+        name: ntp
+        state: started
+      when: ansible_distribution == "Ubuntu"
+
