@@ -1,9 +1,9 @@
 all:
   hosts:
     web01:
-      ansible_host: 172.31.34.26
+      ansible_host: <0.0.0.0>
     db01:
-      ansible_host: 172.31.44.254
+      ansible_host: <0.0.0.0>
   children:
     webserver:
       hosts:
